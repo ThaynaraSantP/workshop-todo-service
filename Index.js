@@ -26,17 +26,46 @@
 //     });
 const express = require('express');
 const { ApolloServer, gql } = require('apollo-server-express');
-const typeDefs = gql`
-  type Query {
-    hello: String
+const {
+
+  GraphQLObjectType,
+  GraphQLSchema,
+  GraphQLString,
+} = require('graphql');
+
+
+const queryType = new GraphQLObjectType({
+  name: 'Query',
+  fields: {
+    hello: {
+      name: 'Hello',
+      type: GraphQLString,
+      resolve: () => 'Hello world!',
+    }
+
   }
-`;
-const resolvers = {
-  Query: {
-    hello: () => "Hello world Thaynara!",
-  },
-};
-const server = new ApolloServer({ typeDefs, resolvers });
+
+});
+
+const schema = new GraphQLSchema({
+  query: queryType,
+});
+
+const server = new ApolloServer({ schema });
+
+// const typeDefs = gql`
+//   type Query {
+//     hello: String
+//   }
+// `;
+// const resolvers = {
+//   Query: {
+//     hello: () => "Hello world Thaynara!",
+//   },
+// };
+
+// const server = new ApolloServer({ typeDefs, resolvers });
+
 const app = express();
 server.applyMiddleware({ app });
 app.listen({ port: 4000 }, () => {
